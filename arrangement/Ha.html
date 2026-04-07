@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>히라가나 배열하기 - な/は행</title>
+    <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#0a0e27; min-height:100vh; padding:20px 40px; overflow-x:hidden; touch-action:pan-y; display:flex; flex-direction:column; }
+        .container { width:100%; max-width:1600px; margin:0 auto; display:flex; flex-direction:column; flex:1; }
+        h1 { color:white; text-align:center; font-size:3rem; margin-bottom:75px; margin-top:55px; font-weight:600; }
+        .subtitle { color:rgba(255,255,255,0.6); font-size:1.2rem; font-weight:400; }
+        .game-wrapper { display:flex; justify-content:center; align-items:center; gap:30px; flex:1; margin-top:-80px; }
+        .row-buttons { display:flex; flex-direction:column; gap:25px; }
+        .row-label { width:120px; height:100px; border:none; border-radius:15px; color:white; font-size:1.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+        .rows-section { display:flex; flex-direction:column; gap:25px; }
+        .answer-row { display:flex; gap:20px; }
+        .answer-slot { width:95px; height:100px; background:rgba(30,35,60,0.5); border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:'Klee One',cursive; font-size:2.8rem; font-weight:600; position:relative; transition:all 0.3s ease; }
+        .answer-slot.empty-spacer { background:transparent; border:none; pointer-events:none; }
+        .answer-slot.drag-over { border-bottom-width:5px; }
+        .answer-slot.correct::after { content:'✓'; position:absolute; bottom:-32px; font-size:1.5rem; color:white; }
+        .answer-slot.wrong { animation:shake 0.5s ease; border-bottom-color:#ff4444; }
+        .options-panel { width:420px; background:rgba(30,35,60,0.4); border-radius:20px; padding:25px 30px; display:flex; align-items:center; justify-content:center; }
+        .options-area { display:grid; grid-template-columns:repeat(5,1fr); gap:18px; justify-items:center; align-items:center; }
+        .option-char { font-family:'Klee One',cursive; font-size:3.5rem; font-weight:600; cursor:grab; transition:transform 0.1s ease,opacity 0.3s ease; touch-action:none; user-select:none; }
+        .option-char.dragging { opacity:0.7; transform:scale(1.3); }
+        .option-char.placed { opacity:0; pointer-events:none; transform:scale(0.5); }
+        .option-char.wrong-bounce { animation:bounce-back 0.5s ease; }
+        .drag-clone { position:fixed; pointer-events:none; z-index:10000; font-family:'Klee One',cursive; font-size:3.5rem; font-weight:600; opacity:0.9; transform:scale(1.3); }
+        .right-section { display:flex; flex-direction:column; align-items:center; }
+        .panel-wrapper { display:flex; width:100%; flex:1; }
+        .reset-btn-wrapper { display:flex; justify-content:center; margin-top:20px; }
+        .reset-btn { padding:8px 20px; background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:0.85rem; cursor:pointer; font-family:inherit; }
+        .fireworks-container { position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:9999; opacity:0; transition:opacity 0.3s ease; }
+        .fireworks-container.active { opacity:1; }
+        .firework { position:absolute; width:8px; height:8px; border-radius:50%; animation:firework-explode 1.2s ease-out forwards; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+        @keyframes bounce-back { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
+        @keyframes firework-explode { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(var(--tx),var(--ty));opacity:0} }
+
+        .option-char[data-char='な']{color:#5dade2} .option-char[data-char='に']{color:#e74c3c} .option-char[data-char='ぬ']{color:#ff8c42} .option-char[data-char='ね']{color:#7fb069} .option-char[data-char='の']{color:#ff6b9d} .option-char[data-char='は']{color:#ff8c42} .option-char[data-char='ひ']{color:#5fb3d4} .option-char[data-char='ふ']{color:#c9a07a} .option-char[data-char='へ']{color:#ff6b9d} .option-char[data-char='ほ']{color:#ffa726}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>히라가나 배열하기 <span class="subtitle">(50음도순)</span></h1>
+        <div class="game-wrapper">
+            <div class="row-buttons">
+                <div class="row-label" style="background:linear-gradient(135deg,#2e7d32,#1b5e20)">Na행</div>
+                <div class="row-label" style="background:linear-gradient(135deg,#aed581,#9ccc65)">Ha행</div>
+            </div>
+            <div class="rows-section">
+                <div class="answer-row">
+                    <div class="answer-slot" data-row="na" data-index="0" style="border-bottom:3px solid #2e7d32;color:#2e7d32"></div>
+                    <div class="answer-slot" data-row="na" data-index="1" style="border-bottom:3px solid #2e7d32;color:#2e7d32"></div>
+                    <div class="answer-slot" data-row="na" data-index="2" style="border-bottom:3px solid #2e7d32;color:#2e7d32"></div>
+                    <div class="answer-slot" data-row="na" data-index="3" style="border-bottom:3px solid #2e7d32;color:#2e7d32"></div>
+                    <div class="answer-slot" data-row="na" data-index="4" style="border-bottom:3px solid #2e7d32;color:#2e7d32"></div>
+                </div>
+                <div class="answer-row">
+                    <div class="answer-slot" data-row="ha" data-index="0" style="border-bottom:3px solid #aed581;color:#aed581"></div>
+                    <div class="answer-slot" data-row="ha" data-index="1" style="border-bottom:3px solid #aed581;color:#aed581"></div>
+                    <div class="answer-slot" data-row="ha" data-index="2" style="border-bottom:3px solid #aed581;color:#aed581"></div>
+                    <div class="answer-slot" data-row="ha" data-index="3" style="border-bottom:3px solid #aed581;color:#aed581"></div>
+                    <div class="answer-slot" data-row="ha" data-index="4" style="border-bottom:3px solid #aed581;color:#aed581"></div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="panel-wrapper">
+                    <div class="options-panel">
+                        <div class="options-area" id="optionsArea">
+                            <div class="option-char" draggable="true" data-char="な" data-row="na">な</div>
+                            <div class="option-char" draggable="true" data-char="に" data-row="na">に</div>
+                            <div class="option-char" draggable="true" data-char="ぬ" data-row="na">ぬ</div>
+                            <div class="option-char" draggable="true" data-char="ね" data-row="na">ね</div>
+                            <div class="option-char" draggable="true" data-char="の" data-row="na">の</div>
+                            <div class="option-char" draggable="true" data-char="は" data-row="ha">は</div>
+                            <div class="option-char" draggable="true" data-char="ひ" data-row="ha">ひ</div>
+                            <div class="option-char" draggable="true" data-char="ふ" data-row="ha">ふ</div>
+                            <div class="option-char" draggable="true" data-char="へ" data-row="ha">へ</div>
+                            <div class="option-char" draggable="true" data-char="ほ" data-row="ha">ほ</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reset-btn-wrapper">
+                    <button class="reset-btn" onclick="resetGame()">다시 시작</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fireworks-container" id="fireworksContainer"></div>
+    <script>
+        const correctOrder = {'na':['な','に','ぬ','ね','の'],'ha':['は','ひ','ふ','へ','ほ']};
+        var currentAnswers = {'na':['','','','',''],'ha':['','','','','']};
+
+        const audioMap = {
+            'あ': '../audio/01_a.mp3', 'い': '../audio/02_i.mp3',
+            'う': '../audio/03_u.mp3', 'え': '../audio/04_e.mp3',
+            'お': '../audio/05_0.mp3', 'か': '../audio/06_ka.mp3',
+            'き': '../audio/07_ki.mp3', 'く': '../audio/08_ku.mp3',
+            'け': '../audio/09_ke.mp3', 'こ': '../audio/10_ko.mp3',
+            'さ': '../audio/11_sa.mp3', 'し': '../audio/12_shi.mp3',
+            'す': '../audio/13_su.mp3', 'せ': '../audio/14_se.mp3',
+            'そ': '../audio/15_so.mp3', 'た': '../audio/16_ta.mp3',
+            'ち': '../audio/17_chi.mp3', 'つ': '../audio/18_tsu.mp3',
+            'て': '../audio/19_te.mp3', 'と': '../audio/20_to.mp3',
+            'な': '../audio/21_na.mp3', 'に': '../audio/22_ni.mp3',
+            'ぬ': '../audio/23_nu.mp3', 'ね': '../audio/24_ne.mp3',
+            'の': '../audio/25_no.mp3', 'は': '../audio/26_ha.mp3',
+            'ひ': '../audio/27_hi.mp3', 'ふ': '../audio/28_fu.mp3',
+            'へ': '../audio/29_he.mp3', 'ほ': '../audio/30_ho.mp3',
+            'ま': '../audio/31_ma.mp3', 'み': '../audio/32_mi.mp3',
+            'む': '../audio/33_mu.mp3', 'め': '../audio/34_me.mp3',
+            'も': '../audio/35_mo.mp3', 'や': '../audio/36_ya.mp3',
+            'ゆ': '../audio/37_yu.mp3', 'よ': '../audio/38_yo.mp3',
+            'ら': '../audio/39_ra.mp3', 'り': '../audio/40_ri.mp3',
+            'る': '../audio/41_ru.mp3', 'れ': '../audio/42_re.mp3',
+            'ろ': '../audio/43_ro.mp3', 'わ': '../audio/44_wa.mp3',
+            'を': '../audio/45_wo.mp3', 'ん': '../audio/46_n.mp3'
+        };
+        let currentAudio = null;
+        function playHiraganaAudio(hiragana) {
+            const audioFile = audioMap[hiragana];
+            if (audioFile) {
+                if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+                currentAudio = new Audio(audioFile);
+                currentAudio.play().catch(e => {});
+            }
+        }
+
+
+        function playCorrectSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const g = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.frequency.value = 523.25; osc.type = 'sine';
+            g.gain.setValueAtTime(0.3, ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+        }
+        function playIncorrectSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const g = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.frequency.value = 200; osc.type = 'sawtooth';
+            g.gain.setValueAtTime(0.2, ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+        }
+        function playCelebrationSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const osc = ctx.createOscillator(); const g = ctx.createGain();
+                osc.connect(g); g.connect(ctx.destination);
+                osc.frequency.value = freq; osc.type = 'sine';
+                const t = ctx.currentTime + i * 0.15;
+                g.gain.setValueAtTime(0.3, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+                osc.start(t); osc.stop(t + 0.4);
+            });
+        }
+        function shuffleChars() {
+            const area = document.getElementById('optionsArea');
+            const chars = Array.from(area.children);
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                area.insertBefore(chars[j], chars[i]);
+            }
+        }
+        var draggedElement = null, isDragging = false, currentTouchElement = null, dragClone = null;
+        function initDragAndDrop() {
+            document.querySelectorAll('.option-char').forEach(char => {
+                char.addEventListener('dragstart', function(e) {
+                    draggedElement = this; this.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    playHiraganaAudio(this.getAttribute('data-char'));
+                });
+                char.addEventListener('dragend', function() { this.classList.remove('dragging'); });
+                char.addEventListener('touchstart', handleTouchStart, {passive: false});
+                char.addEventListener('touchmove', handleTouchMove, {passive: false});
+                char.addEventListener('touchend', handleTouchEnd, {passive: false});
+            });
+            document.querySelectorAll('.answer-slot').forEach(slot => {
+                slot.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('drag-over'); });
+                slot.addEventListener('dragleave', function() { this.classList.remove('drag-over'); });
+                slot.addEventListener('drop', function(e) {
+                    e.preventDefault(); this.classList.remove('drag-over');
+                    if (draggedElement && !this.classList.contains('filled')) handleDrop(draggedElement, this);
+                });
+            });
+        }
+        function handleTouchStart(e) {
+            if (this.classList.contains('placed')) return;
+            e.preventDefault(); currentTouchElement = this; isDragging = false;
+            playHiraganaAudio(this.getAttribute('data-char'));
+        }
+        function handleTouchMove(e) {
+            if (!currentTouchElement) return; e.preventDefault();
+            if (!isDragging) {
+                isDragging = true; currentTouchElement.classList.add('dragging');
+                dragClone = document.createElement('div'); dragClone.className = 'drag-clone';
+                dragClone.textContent = currentTouchElement.textContent;
+                dragClone.style.color = window.getComputedStyle(currentTouchElement).color;
+                document.body.appendChild(dragClone);
+            }
+            if (dragClone) {
+                dragClone.style.left = (e.touches[0].clientX - 30) + 'px';
+                dragClone.style.top = (e.touches[0].clientY - 40) + 'px';
+            }
+        }
+        function handleTouchEnd(e) {
+            if (!currentTouchElement || !isDragging) { currentTouchElement = null; return; }
+            e.preventDefault(); currentTouchElement.classList.remove('dragging');
+            if (dragClone) { dragClone.remove(); dragClone = null; }
+            let dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            while (dropTarget && !dropTarget.classList.contains('answer-slot')) dropTarget = dropTarget.parentElement;
+            if (dropTarget && dropTarget.classList.contains('answer-slot') && !dropTarget.classList.contains('filled'))
+                handleDrop(currentTouchElement, dropTarget);
+            currentTouchElement = null; isDragging = false;
+        }
+        function handleDrop(charEl, slotEl) {
+            const char = charEl.getAttribute('data-char');
+            const charRow = charEl.getAttribute('data-row');
+            const slotRow = slotEl.getAttribute('data-row');
+            const index = parseInt(slotEl.getAttribute('data-index'));
+            if (charRow !== slotRow) {
+                playIncorrectSound(); slotEl.classList.add('wrong'); charEl.classList.add('wrong-bounce');
+                if (navigator.vibrate) navigator.vibrate([50,50,50]);
+                setTimeout(() => { slotEl.classList.remove('wrong'); charEl.classList.remove('wrong-bounce'); }, 500);
+                return;
+            }
+            if (currentAnswers[slotRow][index] === '') {
+                currentAnswers[slotRow][index] = char; slotEl.textContent = char; slotEl.classList.add('filled');
+                if (char === correctOrder[slotRow][index]) {
+                    playCorrectSound(); slotEl.classList.add('correct'); charEl.classList.add('placed');
+                } else {
+                    playIncorrectSound(); slotEl.classList.add('wrong'); charEl.classList.add('wrong-bounce');
+                    if (navigator.vibrate) navigator.vibrate([50,50,50]);
+                    setTimeout(() => {
+                        slotEl.textContent = ''; slotEl.classList.remove('filled','wrong');
+                        currentAnswers[slotRow][index] = ''; charEl.classList.remove('wrong-bounce');
+                    }, 500);
+                    return;
+                }
+                checkCompletion();
+            }
+        }
+        function createFireworks() {
+            const container = document.getElementById('fireworksContainer');
+            container.innerHTML = ''; container.classList.add('active');
+            const colors = ['#ff6b9d','#ff8c42','#c77dff','#ffbe0b','#ffd166','#4ecca3','#48dbfb'];
+            for (let f = 0; f < 12; f++) {
+                const x = Math.random()*window.innerWidth, y = Math.random()*window.innerHeight;
+                for (let i = 0; i < 35; i++) {
+                    const p = document.createElement('div'); p.className = 'firework';
+                    p.style.left = x+'px'; p.style.top = y+'px';
+                    p.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                    const angle = Math.PI*2*i/35, vel = 80+Math.random()*150;
+                    p.style.setProperty('--tx', Math.cos(angle)*vel+'px');
+                    p.style.setProperty('--ty', Math.sin(angle)*vel+'px');
+                    p.style.animationDelay = (f*0.12)+'s';
+                    container.appendChild(p);
+                }
+            }
+            setTimeout(() => container.classList.remove('active'), 2500);
+        }
+        function checkCompletion() {
+            for (const row in currentAnswers)
+                for (let i = 0; i < currentAnswers[row].length; i++)
+                    if (currentAnswers[row][i] !== correctOrder[row][i]) return;
+            setTimeout(() => { playCelebrationSound(); createFireworks(); }, 500);
+        }
+        window.onload = function() { shuffleChars(); initDragAndDrop(); };
+
+        function resetGame() {
+            currentAnswers = {'na':['','','','',''],'ha':['','','','','']};
+            document.querySelectorAll('.answer-slot').forEach(s => { s.textContent=''; s.classList.remove('filled','correct','drag-over','wrong'); });
+            document.querySelectorAll('.option-char').forEach(c => c.classList.remove('placed','dragging','wrong-bounce'));
+            document.getElementById('fireworksContainer').classList.remove('active');
+            document.getElementById('fireworksContainer').innerHTML = '';
+            if (dragClone) { dragClone.remove(); dragClone = null; }
+            shuffleChars();
+        }
+    </script>
+</body>
+</html>
