@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>히라가나 배열하기 - ま/や행</title>
+    <title>히라가나 배열하기 - ら/わ행</title>
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -39,7 +39,7 @@
         @keyframes bounce-back { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
         @keyframes firework-explode { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(var(--tx),var(--ty));opacity:0} }
 
-        .option-char[data-char='ま']{color:#d4916a} .option-char[data-char='み']{color:#5dade2} .option-char[data-char='む']{color:#e5d352} .option-char[data-char='め']{color:#b8a88e} .option-char[data-char='も']{color:#ff8c42} .option-char[data-char='や']{color:#ff8c42} .option-char[data-char='ゆ']{color:#c3d96f} .option-char[data-char='よ']{color:#d4b896}
+        .option-char[data-char='ら']{color:#FFB300} .option-char[data-char='り']{color:#E91E63} .option-char[data-char='る']{color:#00BCD4} .option-char[data-char='れ']{color:#FF6F00} .option-char[data-char='ろ']{color:#4CAF50} .option-char[data-char='わ']{color:#9C27B0} .option-char[data-char='を']{color:#2196F3}
     </style>
 </head>
 <body>
@@ -47,37 +47,36 @@
         <h1>히라가나 배열하기 <span class="subtitle">(50음도순)</span></h1>
         <div class="game-wrapper">
             <div class="row-buttons">
-                <div class="row-label" style="background:linear-gradient(135deg,#fbc02d,#f9a825)">Ma행</div>
-                <div class="row-label" style="background:linear-gradient(135deg,#ff7043,#ff5722)">Ya행</div>
+                <div class="row-label" style="background:linear-gradient(135deg,#f44336,#d32f2f)">Ra행</div>
+                <div class="row-label" style="background:linear-gradient(135deg,#795548,#5d4037)">Wa행</div>
             </div>
             <div class="rows-section">
                 <div class="answer-row">
-                    <div class="answer-slot" data-row="ma" data-index="0" style="border-bottom:3px solid #fbc02d;color:#fbc02d"></div>
-                    <div class="answer-slot" data-row="ma" data-index="1" style="border-bottom:3px solid #fbc02d;color:#fbc02d"></div>
-                    <div class="answer-slot" data-row="ma" data-index="2" style="border-bottom:3px solid #fbc02d;color:#fbc02d"></div>
-                    <div class="answer-slot" data-row="ma" data-index="3" style="border-bottom:3px solid #fbc02d;color:#fbc02d"></div>
-                    <div class="answer-slot" data-row="ma" data-index="4" style="border-bottom:3px solid #fbc02d;color:#fbc02d"></div>
+                    <div class="answer-slot" data-row="ra" data-index="0" style="border-bottom:3px solid #d32f2f;color:#d32f2f"></div>
+                    <div class="answer-slot" data-row="ra" data-index="1" style="border-bottom:3px solid #d32f2f;color:#d32f2f"></div>
+                    <div class="answer-slot" data-row="ra" data-index="2" style="border-bottom:3px solid #d32f2f;color:#d32f2f"></div>
+                    <div class="answer-slot" data-row="ra" data-index="3" style="border-bottom:3px solid #d32f2f;color:#d32f2f"></div>
+                    <div class="answer-slot" data-row="ra" data-index="4" style="border-bottom:3px solid #d32f2f;color:#d32f2f"></div>
                 </div>
                 <div class="answer-row">
-                    <div class="answer-slot" data-row="ya" data-index="0" style="border-bottom:3px solid #ff7043;color:#ff7043"></div>
-                    <div class="answer-slot class="empty-spacer"></div>
-                    <div class="answer-slot" data-row="ya" data-index="1" style="border-bottom:3px solid #ff7043;color:#ff7043"></div>
-                    <div class="answer-slot class="empty-spacer"></div>
-                    <div class="answer-slot" data-row="ya" data-index="2" style="border-bottom:3px solid #ff7043;color:#ff7043"></div>
+                    <div class="answer-slot" data-row="wa" data-index="0" style="border-bottom:3px solid #795548;color:#795548"></div>
+                    <div class="answer-slot empty-spacer"></div>
+                    <div class="answer-slot empty-spacer"></div>
+                    <div class="answer-slot empty-spacer"></div>
+                    <div class="answer-slot" data-row="wa" data-index="1" style="border-bottom:3px solid #795548;color:#795548"></div>
                 </div>
             </div>
             <div class="right-section">
                 <div class="panel-wrapper">
                     <div class="options-panel">
                         <div class="options-area" id="optionsArea">
-                            <div class="option-char" draggable="true" data-char="ま" data-row="ma">ま</div>
-                            <div class="option-char" draggable="true" data-char="み" data-row="ma">み</div>
-                            <div class="option-char" draggable="true" data-char="む" data-row="ma">む</div>
-                            <div class="option-char" draggable="true" data-char="め" data-row="ma">め</div>
-                            <div class="option-char" draggable="true" data-char="も" data-row="ma">も</div>
-                            <div class="option-char" draggable="true" data-char="や" data-row="ya">や</div>
-                            <div class="option-char" draggable="true" data-char="ゆ" data-row="ya">ゆ</div>
-                            <div class="option-char" draggable="true" data-char="よ" data-row="ya">よ</div>
+                            <div class="option-char" draggable="true" data-char="ら" data-row="ra">ら</div>
+                            <div class="option-char" draggable="true" data-char="り" data-row="ra">り</div>
+                            <div class="option-char" draggable="true" data-char="る" data-row="ra">る</div>
+                            <div class="option-char" draggable="true" data-char="れ" data-row="ra">れ</div>
+                            <div class="option-char" draggable="true" data-char="ろ" data-row="ra">ろ</div>
+                            <div class="option-char" draggable="true" data-char="わ" data-row="wa">わ</div>
+                            <div class="option-char" draggable="true" data-char="を" data-row="wa">を</div>
                         </div>
                     </div>
                 </div>
@@ -89,8 +88,8 @@
     </div>
     <div class="fireworks-container" id="fireworksContainer"></div>
     <script>
-        const correctOrder = {'ma':['ま','み','む','め','も'],'ya':['や','ゆ','よ']};
-        var currentAnswers = {'ma':['','','','',''],'ya':['','','']};
+        const correctOrder = {'ra':['ら','り','る','れ','ろ'],'wa':['わ','を']};
+        var currentAnswers = {'ra':['','','','',''],'wa':['','']};
 
         const audioMap = {
             'あ': '../audio/01_a.mp3', 'い': '../audio/02_i.mp3',
@@ -271,7 +270,7 @@
         window.onload = function() { shuffleChars(); initDragAndDrop(); };
 
         function resetGame() {
-            currentAnswers = {'ma':['','','','',''],'ya':['','','']};
+            currentAnswers = {'ra':['','','','',''],'wa':['','']};
             document.querySelectorAll('.answer-slot').forEach(s => { s.textContent=''; s.classList.remove('filled','correct','drag-over','wrong'); });
             document.querySelectorAll('.option-char').forEach(c => c.classList.remove('placed','dragging','wrong-bounce'));
             document.getElementById('fireworksContainer').classList.remove('active');
